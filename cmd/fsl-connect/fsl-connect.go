@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/karalabe/hid"
-	"github.com/thecubic/fslibre/librereader"
+	"github.com/thecubic/fslibre"
 	"log"
 	"os"
 )
