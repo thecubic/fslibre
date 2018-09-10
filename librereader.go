@@ -29,6 +29,8 @@ type libreresponse struct {
 // 	sequence int
 // }
 
+// 0-idx 1-type 2-month 3-day 4-year 5-hour 6-minute 7-second
+// 13-value 15-errors
 type HistoryRecords struct {
 	Records [][16]int
 }
@@ -111,20 +113,23 @@ func (lbr *LibreReader) History() (*HistoryRecords, error) {
 }
 
 // TODO: not the same as history
-// func (lbr *LibreReader) ArrHistory() (*HistoryRecords, error) {
-// 	var err error
-// 	err = lbr.send_text_command("$arresult?")
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp, err := lbr.history_recv()
-// 	return resp, err
-// }
+func (lbr *LibreReader) ArrHistory() (*HistoryRecords, error) {
+	var err error
+	err = lbr.send_text_command("$arresult?")
+	if err != nil {
+		return nil, err
+	}
+	resp, err := lbr.history_recv()
+	return resp, err
+}
 
-// func (lbr *LibreReader) Arresult() (string, error) {
-// 	resps, err := lbr.raw_text_command("$arresult?")
-// 	return resps, err
-// }
+func (lbr *LibreReader) Arresult() (string, error) {
+	resps, err := lbr.text_command("$arresult?")
+	if resps.ok {
+		return resps.text, err
+	}
+	return "", err
+}
 
 func (lbr *LibreReader) Dbrnum() (int, error) {
 	resps, err := lbr.text_command("$dbrnum?")
@@ -143,21 +148,21 @@ func (lbr *LibreReader) Dbrnum() (int, error) {
 
 // TODO: broken, probably because they are not set and thus special
 
-// func (lbr *LibreReader) PatientName() (string, error) {
-// 	resps, err := lbr.text_command("$ptname?")
-// 	if resps.ok {
-// 		return resps.text, err
-// 	}
-// 	return "", fmt.Errorf("command failure")
-// }
-//
-// func (lbr *LibreReader) PatientId() (string, error) {
-// 	resps, err := lbr.text_command("$ptid?")
-// 	if resps.ok {
-// 		return resps.text, err
-// 	}
-// 	return "", fmt.Errorf("command failure")
-// }
+func (lbr *LibreReader) PatientName() (string, error) {
+	resps, err := lbr.text_command("$ptname?")
+	if resps.ok {
+		return resps.text, err
+	}
+	return "", fmt.Errorf("command failure")
+}
+
+func (lbr *LibreReader) PatientId() (string, error) {
+	resps, err := lbr.text_command("$ptid?")
+	if resps.ok {
+		return resps.text, err
+	}
+	return "", fmt.Errorf("command failure")
+}
 
 // PRIVATE
 
